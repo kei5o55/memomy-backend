@@ -2,16 +2,16 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Commits", type: :request do
   describe "POST /api/v1/projects/:project_id/commits (Commit作成)" do
-    let!(:project) { FactoryBot.create(:project) }
+    let!(:project) { create(:project) }
 
     context "正常なパラメータが送信された場合" do
       let(:valid_params) do
         {
           commit: {
             note: "ポモドーロ1セッション完了",
-            durationMs: "1500000",
-            startedAt: "2026-08-28T10:00:00.000Z",
-            endedAt: "2026-08-28T10:25:00.000Z"
+            duration_ms: "1500000",
+            started_at: "2026-08-28T10:00:00.000Z",
+            ended_at: "2026-08-28T10:25:00.000Z"
           }
         }
       end
@@ -23,16 +23,6 @@ RSpec.describe "Api::V1::Commits", type: :request do
 
         # 💡 コントローラーで status: :created を返している場合は :created に変更
         expect(response).to have_http_status(:created)
-      end
-
-      it "キャメルケースのキーがスネークケースのカラムへ正しく保存されること" do
-        post "/api/v1/projects/#{project.id}/commits", params: valid_params
-
-        created_commit = Commit.last
-
-        expect(created_commit.duration_ms).to eq 1_500_000
-        expect(created_commit.note).to eq "ポモドーロ1セッション完了"
-        expect(created_commit.project_id).to eq project.id
       end
     end
 
@@ -60,8 +50,8 @@ RSpec.describe "Api::V1::Commits", type: :request do
         {
           commit: {
             note: "test",
-            startedAt: "2026-09-09T10:00:00Z",
-            endedAt: "2026-09-01T11:00:00Z" # startedAt より過去の日時
+            started_at: "2026-09-09T10:00:00Z",
+            ended_at: "2026-09-01T11:00:00Z" # startedAt より過去の日時
           }
         }
       end

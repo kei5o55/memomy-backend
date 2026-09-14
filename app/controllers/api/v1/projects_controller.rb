@@ -48,7 +48,7 @@ module Api
       # PATCH /api/v1/projects/:id
       def update
         project = Project.find(params[:id])
-
+        #差分じゃなくて全部更新してるのか
         if project.update(project_params)
           render json: project, status: :ok
         else
@@ -64,25 +64,12 @@ module Api
           :name,
           :memo,
           :completed,
-          :dueDate,
-          :endDate,
-          :targetHours,
-          :pomodoroWorkMinutes,
-          :pomodoroBreakMinutes
+          :due_date,
+          :end_date,
+          :target_hours,
+          :pomodoro_work_minutes,
+          :pomodoro_break_minutes
         )
-
-        # 2. Railsの属性名（スネークケース）にマッピングしてハッシュで返す
-        {
-          name: p[:name],
-          memo: p[:memo],
-          completed: p[:completed],
-          due_date: p[:dueDate],
-          end_date: p[:endDate],
-          target_hours: p[:targetHours],
-          pomodoro_work_minutes: p[:pomodoroWorkMinutes],
-          pomodoro_break_minutes: p[:pomodoroBreakMinutes]
-        }
-
         # {
         #  "project": {
         #    "name": "i4re",

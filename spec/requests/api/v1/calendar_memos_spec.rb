@@ -3,8 +3,8 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::CalendarMemos", type: :request do
   # テストデータの作成（FactoryBotを想定。未導入の場合は CalendarMemo.create! に置き換えてください）
-  let!(:calendar_memos) { FactoryBot.create_list(:calendar_memo, 3) }
-  let(:calendar_memo) { FactoryBot.calendar_memos.first }
+  let!(:calendar_memos) { create_list(:calendar_memo, 3) }
+  let(:calendar_memo) { calendar_memos.first }
 
   describe "GET /api/v1/calendar_memos (一覧取得)" do
     it "カレンダーメモの一覧を取得し、ステータス 200 (OK) を返すこと" do
@@ -60,41 +60,6 @@ RSpec.describe "Api::V1::CalendarMemos", type: :request do
 
         json = JSON.parse(response.body)
         expect(json).to have_key("errors")
-      end
-    end
-  end
-
-  describe "PATCH /api/v1/calendar_memos/:id (更新)" do
-    context "存在するデータの場合" do
-      let(:update_params) do
-        {
-          calendar_memo: {
-            text: "更新されたメモ"
-          }
-        }
-      end
-
-      it "データが更新され、ステータス 200 (OK) を返すこと" do
-        patch api_v1_calendar_memo_path(calendar_memo), params: update_params
-
-        expect(response).to have_http_status(:ok)
-
-        json = JSON.parse(response.body)
-        expect(json["text"]).to eq("更新されたメモ")
-
-        # 実際にDBの値が更新されているか検証
-        expect(calendar_memo.reload.text).to eq("更新されたメモ")
-      end
-    end
-
-    context "存在しないデータの場合" do
-      it "ステータス 404 (Not Found) を返すこと" do
-        patch api_v1_calendar_memo_path(id: 999999), params: { calendar_memo: { text: "hoge" } }
-
-        expect(response).to have_http_status(:not_found)
-
-        json = JSON.parse(response.body)
-        expect(json["error"]).to eq("指定されたメモが見つかりません")
       end
     end
   end

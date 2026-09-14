@@ -2,6 +2,21 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Projects", type: :request do
+  describe "GET /api/v1/projectc (ロード)" do
+    it "200 OK が返り、プロジェクト一覧が取得できること" do
+      create(:project)
+      create(:project)
+
+      get "/api/v1/projects"
+
+      expect(response).to have_http_status(:ok)
+
+      json = JSON.parse(response.body)
+
+      expect(json.length).to eq(2)
+    end
+  end
+
   describe "POST /api/v1/projects (新規作成)" do
     context "正常なパラメータ（文字列の数値や日付含む）が送られてきた場合" do
       let(:valid_params) do

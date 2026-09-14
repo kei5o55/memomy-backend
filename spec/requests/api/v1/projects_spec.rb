@@ -23,12 +23,12 @@ RSpec.describe "Api::V1::Projects", type: :request do
         {
           project: {
             name: "COMITIA新刊",
-            dueDate: "2026-08-29",
+            due_date: "2026-08-29",
             completed: false,
             memo: "表紙ラフ作成から",
-            targetHours: "10",                # フロントからは文字列で届く
-            pomodoroWorkMinutes: "25",
-            pomodoroBreakMinutes: "5"
+            target_hours: "10",                # フロントからは文字列で届く
+            pomodoro_work_minutes: "25",
+            pomodoro_break_minutes: "5"
           }
         }
       end
@@ -67,7 +67,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
           project: {
             name: "",
             completed: false,
-            targetHours: "10"
+            target_hours: "10"
           }
         }
       end
@@ -90,7 +90,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
           project: {
             name: "ire",
             completed: false,
-            targetHours: "-1"
+            target_hours: "-1"
           }
         }
       end
@@ -107,4 +107,70 @@ RSpec.describe "Api::V1::Projects", type: :request do
       end
     end
   end
+
+  describe "PATCH /api/v1/projects(更新)" do
+    let(:project) {create(:project)}
+    context "存在しないproject_idが送信された場合" do
+      it "404 Not Found が返ること" do
+        patch "/api/v1/projects/999999", params: { project: { name: "更新テスト" } }
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+    context "存在するproject_idが送信された場合" do
+      it "正しく更新されること" do
+        patch "/api/v1/projects/#{project.id}", params: { project: { name: "更新テスト" } }
+
+        expect(response).to have_http_status(:ok)
+
+        json = JSON.parse(response.body)
+        expect(json["name"]).to eq("更新テスト")
+      end
+    end
+    context "想定しない数値が送信された場合" do
+      it "422 Unprocessable Entity が返ること(数値マイナス)" do
+        patch "/api/v1/projects/#{project.id}", params: { project: { target_hours: "-1" } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to be_present
+        
+        patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to be_present
+      end
+      it "422 Unprocessable Entity が返ること(名前空欄)" do        
+        patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to be_present
+      end
+    end
+  end
+
+  describe "DELETE /api/v1/projects(削除)" do
+    let(:project) {create(:project)}
+    context "存在しないproject_idが送信された場合" do
+      it "404 Not Found が返ること" do
+        delete "/api/v1/projects/999999"
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+    context "存在するproject_idが送信された場合" do
+      it "正しく削除されること" do
+        delete "/api/v1/projects/#{project.id}"
+
+        expect(response).to have_http_status(:no_content)
+      end
+    end
+  end
+
+
 end

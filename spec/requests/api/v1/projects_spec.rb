@@ -109,7 +109,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
   end
 
   describe "PATCH /api/v1/projects(更新)" do
-    let(:project) {create(:project)}
+    let(:project) { create(:project) }
     context "存在しないproject_idが送信された場合" do
       it "404 Not Found が返ること" do
         patch "/api/v1/projects/999999", params: { project: { name: "更新テスト" } }
@@ -135,7 +135,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
 
         json = JSON.parse(response.body)
         expect(json["errors"]).to be_present
-        
+
         patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -143,7 +143,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
         json = JSON.parse(response.body)
         expect(json["errors"]).to be_present
       end
-      it "422 Unprocessable Entity が返ること(名前空欄)" do        
+      it "422 Unprocessable Entity が返ること(名前空欄)" do
         patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -155,7 +155,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
   end
 
   describe "DELETE /api/v1/projects(削除)" do
-    let(:project) {create(:project)}
+    let(:project) { create(:project) }
     context "存在しないproject_idが送信された場合" do
       it "404 Not Found が返ること" do
         delete "/api/v1/projects/999999"
@@ -171,6 +171,4 @@ RSpec.describe "Api::V1::Projects", type: :request do
       end
     end
   end
-
-
 end

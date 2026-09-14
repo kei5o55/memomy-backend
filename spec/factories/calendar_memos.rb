@@ -2,6 +2,6 @@
 FactoryBot.define do
   factory :calendar_memo do
     sequence(:date) { |n| Date.current + n.days }
-    text {"テストだよぅ"}
+    text { "テストだよぅ" }
   end
 end

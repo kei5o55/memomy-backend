@@ -57,6 +57,11 @@ wslからやってね
   `docker compose exec web bundle exec rspec spec/requests/api/v1/projects_spec.rb:15`
 
 
+#### rubocop
+
+`docker compose exec web bundle exec rubocop -a`
+
+で変更を反映
 
 ## 工夫
 - 画像URLの相対パス化による環境依存の排除

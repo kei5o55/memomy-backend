@@ -6,9 +6,9 @@ class Project < ApplicationRecord
   has_many :day_schedules, dependent: :nullify
 
   validates :name, presence: true # または name
-  validates :completed, inclusion: { in: [true, false] } #presenceだと「false」もはじかれる
+  validates :completed, inclusion: { in: [ true, false ] } # presenceだと「false」もはじかれる
   validates :target_hours, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
-  
+
 
   before_validation :normalize_attributes
 

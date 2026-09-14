@@ -48,7 +48,7 @@ module Api
       # PATCH /api/v1/projects/:id
       def update
         project = Project.find(params[:id])
-        #差分じゃなくて全部更新してるのか
+        # 差分じゃなくて全部更新してるのか
         if project.update(project_params)
           render json: project, status: :ok
         else

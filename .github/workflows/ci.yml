@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   pull_request:
@@ -83,3 +83,19 @@ jobs:
         run: |
           bundle exec rails db:test:prepare
           bundle exec rspec # ※5
+
+  # ==========================================
+  # Render への自動デプロイ (CD)
+  # ==========================================
+  deploy:
+    name: Deploy to Render
+    # 3つの CI ジョブがすべて完了(成功)した時だけ実行
+    needs: [scan_ruby, lint, test]
+    runs-on: ubuntu-latest
+    # PR作成時・更新時にはデプロイせず、mainブランチへのPush/マージ時のみ実行
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

@@ -1,0 +1,24 @@
+databases:
+  - name: my-rails-db
+    databaseName: my_rails_db
+    user: my_rails_user
+    plan: free # 無料プランを指定
+
+services:
+  - type: web
+    name: my-rails-app
+    env: ruby
+    plan: free # 無料プランを指定
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec rails server -b 0.0.0.0 -p $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-rails-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false # Renderの管理画面から手動で入力します
+      - key: BASIC_AUTH_USER
+        value: admin # 任意の認証ユーザー名
+      - key: BASIC_AUTH_PASSWORD
+        sync: false # Renderの管理画面から手動で入力します

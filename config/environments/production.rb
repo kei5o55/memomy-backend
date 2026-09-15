@@ -44,11 +44,15 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # Cache Store: solid_cache を無効化し、メモリキャッシュに変更
+  # config.cache_store = :solid_cache_store
+  config.cache_store = :memory_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Active Job: queue_adapter を async にし、solid_queue の設定行を削除またはコメントアウト
+  # config.active_job.queue_adapter = :solid_queue
+  config.active_job.queue_adapter = :async
+  # config.solid_queue.connects_to = { database: { writing: :queue } } # ← この行をコメントアウトまたは削除
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

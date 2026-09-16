@@ -5,7 +5,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     origins "http://localhost:3000", "http://127.0.0.1:3000"
 
     # ❌ origins '*' は絶対NG
-    # origins 'https://your-frontend-app.com' # ⭕️ 公開時は自分のフロントエンドのドメインのみ許可
+    origins 'https://memomy.net' # ⭕️ 公開時は自分のフロントエンドのドメインのみ許可
 
     # 本番環境など複数許可したい場合は環境変数で渡す設計がおすすめ
     # origins ENV.fetch("ALLOWED_ORIGINS", "http://localhost:3000").split(",")

@@ -4,7 +4,7 @@ module Api
     class HealthController < ApplicationController
       # Basic 認証を適用（環境変数 BASIC_AUTH_USER / BASIC_AUTH_PASSWORD を使用）
       http_basic_authenticate_with name: ENV.fetch("BASIC_AUTH_USER", "admin"),
-                                   password: ENV.fetch("BASIC_AUTH_PASSWORD", "password")
+                                   password: ENV.fetch("BASIC_AUTH_PASSWORD", "password"),
                                    unless: -> { request.options? }
 
       def show

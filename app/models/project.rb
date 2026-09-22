@@ -2,7 +2,7 @@
 class Project < ApplicationRecord
   # belongs_to :user
   has_many :work_sessions, dependent: :destroy
-  has_many :commits, dependent: :destroy # projectが削除されたら不随するcommitも削除されるよ
+  has_many :commits, dependent: :destroy # projectが削除されたら不随するcommitも削除される
   has_many :day_schedules, dependent: :nullify
 
   validates :name, presence: true # または name

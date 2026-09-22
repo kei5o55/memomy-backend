@@ -31,13 +31,13 @@ module Api
         # 1. Project ID から検索
         project = Project.find(params[:project_id])
 
-        # 💡 project.commits.build(commit_params) 時に project_id は自動設定される
+        # project.commits.build(commit_params) 時に project_id は自動設定される
         commit = project.commits.build(commit_params)
 
         # commit.user = current_user
 
         if commit.save
-          render json: commit_response(commit), status: :created # 💡 成功時は :created (201) がよりRESTful
+          render json: commit_response(commit), status: :created 
         else
           render json: { errors: commit.errors.full_messages }, status: :unprocessable_entity
         end
@@ -49,7 +49,7 @@ module Api
       def destroy
         commit = Commit.find(params[:id])
         commit.destroy
-        head :no_content # 💡 成功時はレスポンスボディを返さずに204 No Contentを返すのがRESTful
+        head :no_content #
       rescue ActiveRecord::RecordNotFound
         render json: { error: "Commit not found" }, status: :not_found
       end
@@ -57,7 +57,7 @@ module Api
       private
 
       def commit_params
-        # 1. フロントから届くパラメータを許可（projectId は URL 側で担保されるため除外でOK）
+        #  フロントから届くパラメータを許可（projectId は URL 側で担保されるため除外）
         p = params.require(:commit).permit(
           :note,
           :project_id,
@@ -84,7 +84,7 @@ module Api
           startedAt: commit.started_at,
           endedAt: commit.ended_at,
           durationMs: commit.duration_ms,
-          # 💡 ActiveStorage の添付有無を判定してパス/URLを生成
+          # ActiveStorage の添付有無を判定してパス/URLを生成
           image: commit.image.attached? ? rails_blob_path(commit.image, only_path: true) : nil
         }
       end

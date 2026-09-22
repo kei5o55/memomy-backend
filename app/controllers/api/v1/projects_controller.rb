@@ -48,7 +48,6 @@ module Api
       # PATCH /api/v1/projects/:id
       def update
         project = Project.find(params[:id])
-        # 差分じゃなくて全部更新してるのか
         if project.update(project_params)
           render json: project, status: :ok
         else
@@ -59,7 +58,7 @@ module Api
       private
 
       def project_params # ユーザid等を許可しない
-        # 1. フロントから届くキャメルケースのキー名を許可する
+        # フロントから届くキャメルケースのキー名を許可する
         p = params.require(:project).permit(
           :name,
           :memo,

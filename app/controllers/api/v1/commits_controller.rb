@@ -37,7 +37,7 @@ module Api
         # commit.user = current_user
 
         if commit.save
-          render json: commit_response(commit), status: :created 
+          render json: commit_response(commit), status: :created
         else
           render json: { errors: commit.errors.full_messages }, status: :unprocessable_entity
         end

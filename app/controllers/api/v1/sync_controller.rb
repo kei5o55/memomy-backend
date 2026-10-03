@@ -1,5 +1,5 @@
 # app/controllers/api/v1/sync_controller.rb
-
+# idbのデータを一括以降する奴（普段使いしない）
 module Api
   module V1
     class SyncController < ApplicationController

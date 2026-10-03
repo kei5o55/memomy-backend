@@ -15,19 +15,19 @@ class ApplicationController < ActionController::Base
 
   # authenticate_user! を手動で定義して Warden 認証を実行
   def authenticate_user!
-    auth_header = request.headers['Authorization']
-    token = auth_header&.split(' ')&.last
+    auth_header = request.headers["Authorization"]
+    token = auth_header&.split(" ")&.last
 
     if token.present?
       begin
         # 1. JWT をデコードして payload（JTIやsub）を取得
         payload = Warden::JWTAuth::TokenDecoder.new.call(token)
-        
+
         # 2. payload['sub']（ユーザーID）と payload['jti'] を使って DB から検索
-        user = User.find_by(id: payload['sub'])
+        user = User.find_by(id: payload["sub"])
 
         # 3. DBの JTI とトークンの JTI が一致していれば認証成功（JTI失効チェック）
-        if user && user.jti == payload['jti']
+        if user && user.jti == payload["jti"]
           @current_user = user
         end
       rescue => e
@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     return if @current_user
 
     render json: {
-      status: { code: 401, message: 'Unauthorized. Please log in.' }
+      status: { code: 401, message: "Unauthorized. Please log in." }
     }, status: :unauthorized
   end
 

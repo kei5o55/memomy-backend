@@ -14,7 +14,7 @@ module Api
           token, _payload = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
 
           # 2. レスポンスヘッダーに Authorization をセット
-          response.headers['Authorization'] = "Bearer #{token}"
+          response.headers["Authorization"] = "Bearer #{token}"
 
           render json: {
             status: { code: 200, message: "Logged in successfully." },

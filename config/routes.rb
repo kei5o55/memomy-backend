@@ -6,8 +6,8 @@ Rails.application.routes.draw do
       get "test", to: "users#test"
       post "sync/import", to: "sync#import"
       # devise_for :users はそのまま残しておき、API 用セッションのみカスタムルートを定義
-      post 'login', to: 'sessions#create'
-      delete 'logout', to: 'sessions#destroy'
+      post "login", to: "sessions#create"
+      delete "logout", to: "sessions#destroy"
 
       resources :projects, only: [ :index, :create, :destroy, :update ] do
         resources :commits, only: [ :index, :create ]

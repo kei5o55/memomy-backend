@@ -20,17 +20,17 @@ Rails.application.routes.draw do
 
       # /api/v1/login, /api/v1/logout, /api/v1/signup にカスタムパスを変更する場合
       devise_for :users,
-        path: '',
+        path: "",
         path_names: {
-          sign_in: 'login',
-          sign_out: 'logout',
-          registration: 'signup'
+          sign_in: "login",
+          sign_out: "logout",
+          registration: "signup"
         },
         controllers: {
-          sessions: 'api/v1/users/sessions',         # コントローラーのディレクトリ階層に合わせて調整
-          registrations: 'api/v1/users/registrations'
+          sessions: "api/v1/users/sessions",         # コントローラーのディレクトリ階層に合わせて調整
+          registrations: "api/v1/users/registrations"
         },
-        skip: [:passwords, :confirmations, :unlocks] # 不要な機能をスキップ
+        skip: [ :passwords, :confirmations, :unlocks ] # 不要な機能をスキップ
     end
   end
 end

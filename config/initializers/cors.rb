@@ -17,7 +17,5 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
       expose: [ "Authorization" ], # トークン認証等をする場合にレスポンスヘッダーを見せる設定
       credentials: true         # Cookie/セッションを使う場合は true
-      # ⭕ フロント側で response.headers.get('Authorization') を取得できるように許可
-      expose: ["Authorization"]
   end
 end

@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   # Devise で name など追加パラメータを許可する設定
   before_action :configure_permitted_parameters, if: :devise_controller?
-  
+
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :basic_auth, if: -> { Rails.env.production? && ENV["BASIC_AUTH_USER"].present? }
 

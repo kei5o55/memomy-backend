@@ -18,7 +18,7 @@ module Api
           }, status: :unprocessable_entity
         end
       end
-      #Deviseのストロングパラメータを直接オーバーライドする
+      # Deviseのストロングパラメータを直接オーバーライドする
       def sign_up_params
         params.require(:user).permit(:name, :email, :password, :password_confirmation)
       end

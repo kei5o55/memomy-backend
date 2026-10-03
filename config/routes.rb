@@ -1,15 +1,4 @@
 Rails.application.routes.draw do
-  # devise_for :users,
-  #  path: "api/v1",
-  #  path_names: {
-  #    sign_in: "login",
-  #    sign_out: "logout",
-  #    registration: "signup"
-  #  },
-  #  controllers: {
-  #    sessions: "api/v1/sessions",
-  #    registrations: "api/v1/registrations"
-  #  }
   namespace :api do
     namespace :v1 do
       get "health", to: "health#show"
@@ -28,6 +17,20 @@ Rails.application.routes.draw do
       resources :calendar, only: [ :index, :create ]
       resources :day_schedules, only: [ :index, :create, :destroy ]
       resources :calendar_memos, only: [ :index, :create, :update, :destroy ]
+
+      # /api/v1/login, /api/v1/logout, /api/v1/signup にカスタムパスを変更する場合
+      devise_for :users,
+        path: '',
+        path_names: {
+          sign_in: 'login',
+          sign_out: 'logout',
+          registration: 'signup'
+        },
+        controllers: {
+          sessions: 'api/v1/users/sessions',         # コントローラーのディレクトリ階層に合わせて調整
+          registrations: 'api/v1/users/registrations'
+        },
+        skip: [:passwords, :confirmations, :unlocks] # 不要な機能をスキップ
     end
   end
 end

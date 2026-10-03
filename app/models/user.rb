@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
   include Devise::JWT::RevocationStrategies::JTIMatcher
   # Active Storage で画像を1枚紐付け
   has_one_attached :icon

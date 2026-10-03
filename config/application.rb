@@ -22,6 +22,10 @@ module App
       g.orm :active_record, primary_key_type: :uuid
     end
 
+    # Devise や Warden でセッション機能を使うための設定
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

@@ -1,5 +1,11 @@
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
+  # API モードで Devise を使う際に CSRF トークン検証をスキップ
+  protect_from_forgery with: :null_session, if: -> { request.format.json? }
+
+  # Devise で name など追加パラメータを許可する設定
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :basic_auth, if: -> { Rails.env.production? && ENV["BASIC_AUTH_USER"].present? }
 

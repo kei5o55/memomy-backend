@@ -18,7 +18,7 @@ class Api::V1::UsersController < ApplicationController
       }, status: :unprocessable_entity
     end
   end
-
+  # GET api/v1/me
   def me
     render json: {
       message: "認証成功！ログイン中のユーザーです",

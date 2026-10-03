@@ -1,11 +1,11 @@
 module Api
   module V1
-    class Users::RegistrationsController < Devise::RegistrationsController
+    class RegistrationsController < Devise::RegistrationsController
       skip_before_action :verify_authenticity_token, raise: false
       respond_to :json
 
       private
-
+      # POST http://localhost:3001/api/v1/signup
       def respond_with(resource, _opts = {})
         if resource.persisted?
           render json: {

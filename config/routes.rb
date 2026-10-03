@@ -5,6 +5,9 @@ Rails.application.routes.draw do
       get "me", to: "users#me"
       get "test", to: "users#test"
       post "sync/import", to: "sync#import"
+      # devise_for :users はそのまま残しておき、API 用セッションのみカスタムルートを定義
+      post 'login', to: 'sessions#create'
+      delete 'logout', to: 'sessions#destroy'
 
       resources :projects, only: [ :index, :create, :destroy, :update ] do
         resources :commits, only: [ :index, :create ]
@@ -27,10 +30,10 @@ Rails.application.routes.draw do
           registration: "signup"
         },
         controllers: {
-          sessions: "api/v1/users/sessions",         # コントローラーのディレクトリ階層に合わせて調整
-          registrations: "api/v1/users/registrations"
+          sessions: "api/v1/sessions",         # コントローラーのディレクトリ階層に合わせて調整
+          registrations: "api/v1/registrations"
         },
-        skip: [ :passwords, :confirmations, :unlocks ] # 不要な機能をスキップ
+        skip: [ :confirmations, :unlocks, :sessions ] # 不要な機能をスキップ
     end
   end
 end

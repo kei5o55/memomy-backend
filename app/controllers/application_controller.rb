@@ -2,12 +2,49 @@
 class ApplicationController < ActionController::Base
   # API モードで Devise を使う際に CSRF トークン検証をスキップ
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
+  # Devise の認証ヘルパー（authenticate_user!, current_user 等）を有効化
+  include Devise::Controllers::Helpers
 
   # Devise で name など追加パラメータを許可する設定
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :basic_auth, if: -> { Rails.env.production? && ENV["BASIC_AUTH_USER"].present? }
+
+  private
+
+  # authenticate_user! を手動で定義して Warden 認証を実行
+  def authenticate_user!
+    auth_header = request.headers["Authorization"]
+    token = auth_header&.split(" ")&.last
+
+    if token.present?
+      begin
+        # 1. JWT をデコードして payload（JTIやsub）を取得
+        payload = Warden::JWTAuth::TokenDecoder.new.call(token)
+
+        # 2. payload['sub']（ユーザーID）と payload['jti'] を使って DB から検索
+        user = User.find_by(id: payload["sub"])
+
+        # 3. DBの JTI とトークンの JTI が一致していれば認証成功（JTI失効チェック）
+        if user && user.jti == payload["jti"]
+          @current_user = user
+        end
+      rescue => e
+        Rails.logger.error "JWT Auth Error: #{e.class} - #{e.message}"
+      end
+    end
+
+    return if @current_user
+
+    render json: {
+      status: { code: 401, message: "Unauthorized. Please log in." }
+    }, status: :unauthorized
+  end
+
+  def current_user
+    @current_user
+  end
 
   protected
 

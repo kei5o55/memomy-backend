@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_141705) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_08_182016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_141705) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "badges", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "icon"
+    t.string "name"
+    t.datetime "updated_at", null: false
   end
 
   create_table "calendar_memos", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -92,6 +100,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_141705) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_badges", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "badge_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["badge_id"], name: "index_user_badges_on_badge_id"
+    t.index ["user_id"], name: "index_user_badges_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "bgm_url"
     t.text "bio"
@@ -103,6 +120,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_141705) do
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.text "sns_links", default: [], array: true
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
@@ -128,5 +146,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_141705) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "commits", "projects"
   add_foreign_key "day_schedules", "projects"
+  add_foreign_key "user_badges", "badges"
+  add_foreign_key "user_badges", "users"
   add_foreign_key "work_sessions", "projects"
 end

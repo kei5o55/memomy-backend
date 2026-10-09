@@ -3,7 +3,7 @@ class Commit < ApplicationRecord
   belongs_to :project
   # いったんユーザ別を無しに
   # belongs_to :user
-  has_one_attached :image
+  has_one_attached :image # コミット用画像を１つモテる
 
   validates :duration_ms, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   # 通常の存在チェックなど

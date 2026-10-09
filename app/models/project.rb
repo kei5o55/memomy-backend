@@ -1,9 +1,9 @@
 # app/models/project.rb
 class Project < ApplicationRecord
   # belongs_to :user
-  has_many :work_sessions, dependent: :destroy
+  # has_many :work_sessions, dependent: :destroy セッションはフロントのidbで持とうと考えてるから、これ要らないかも（というかworksessionのスキーマから全部いらない）
   has_many :commits, dependent: :destroy # projectが削除されたら不随するcommitも削除される
-  has_many :day_schedules, dependent: :nullify
+  has_many :day_schedules, dependent: :nullify # scheduleに紐づけることもできる（機能としては未実装）
 
   validates :name, presence: true # または name
   validates :completed, inclusion: { in: [ true, false ] } # presenceだと「false」もはじかれる

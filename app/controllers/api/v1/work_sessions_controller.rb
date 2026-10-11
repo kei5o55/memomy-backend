@@ -24,23 +24,14 @@ module Api
       private
 
       def work_session_params
-        p = params.require(:work_session).permit(
-          :projectId,
-          :startedAt,
-          :endedAt,
+        params.require(:work_session).permit(
+          :project_id,
+          :started_at,
+          :ended_at,
           :note,
           :status,
-          :pomodoroCount
-        ) # キャメルケース（受け取るキー名）
-
-        {
-          project_id: p[:projectId],
-          started_at: p[:startedAt],
-          ended_at: p[:endedAt],
-          note: p[:note],
-          status: p[:status],
-          pomodoro_count: p[:pomodoroCount]
-        }
+          :pomodoro_count
+        )
       end
     end
   end

@@ -5,6 +5,12 @@ class ApplicationController < ActionController::Base
   # Devise の認証ヘルパー（authenticate_user!, current_user 等）を有効化
   include Devise::Controllers::Helpers
 
+  # フロントから届く camelCase のキーを、受け取り時に snake_case へ変換する
+  before_action :underscore_params_keys
+  # ParamsWrapper は before_action より前に動き、`daySchedule` のような camelCase のルートキーだと
+  # 空の `day_schedule` を追加して変換後の値を上書きしてしまうため無効化（フロントは常にルートキー付きで送る）
+  wrap_parameters false
+
   # Devise で name など追加パラメータを許可する設定
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -56,6 +62,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def underscore_params_keys
+    params.deep_transform_keys!(&:underscore)
+  end
 
   def basic_auth
     authenticate_or_request_with_http_basic do |username, password|

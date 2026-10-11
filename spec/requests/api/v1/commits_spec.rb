@@ -26,6 +26,34 @@ RSpec.describe "Api::V1::Commits", type: :request do
       end
     end
 
+    context "camelCase のキーで multipart (FormData) が送られてきた場合" do
+      let(:camel_params) do
+        {
+          commit: {
+            note: "camelCase",
+            projectId: project.id,
+            startedAt: "2026-08-28T10:00:00.000Z",
+            endedAt: "2026-08-28T10:25:00.000Z",
+            image: fixture_file_upload("test_image.png", "image/png")
+          }
+        }
+      end
+
+      it "snake_case に変換されて保存され、レスポンスは snake_case のキーで返ること" do
+        post "/api/v1/projects/#{project.id}/commits", params: camel_params
+
+        expect(response).to have_http_status(:created)
+
+        commit = project.commits.last
+        expect(commit.started_at).to eq Time.zone.parse("2026-08-28T10:00:00.000Z")
+        expect(commit.ended_at).to eq Time.zone.parse("2026-08-28T10:25:00.000Z")
+        expect(commit.image).to be_attached
+
+        json = JSON.parse(response.body)
+        expect(json.keys).to contain_exactly("id", "project_id", "note", "started_at", "ended_at", "duration_ms", "image")
+      end
+    end
+
     context "存在しない project_id が URL に指定された場合" do
       let(:valid_params) do
         {

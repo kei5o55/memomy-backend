@@ -76,14 +76,14 @@ module Api
         # }
       end
 
-      def commit_response(commit)# キャメルケースにマッピング
+      def commit_response(commit)
         {
           id: commit.id,
-          projectId: commit.project_id,
+          project_id: commit.project_id,
           note: commit.note,
-          startedAt: commit.started_at,
-          endedAt: commit.ended_at,
-          durationMs: commit.duration_ms,
+          started_at: commit.started_at,
+          ended_at: commit.ended_at,
+          duration_ms: commit.duration_ms,
           # ActiveStorage の添付有無を判定してパス/URLを生成
           image: commit.image.attached? ? rails_blob_path(commit.image, only_path: true) : nil
         }

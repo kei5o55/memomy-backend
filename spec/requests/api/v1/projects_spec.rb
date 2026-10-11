@@ -61,6 +61,37 @@ RSpec.describe "Api::V1::Projects", type: :request do
       end
     end
 
+    context "フロントから camelCase のキーで JSON が送られてきた場合" do
+      let(:camel_params) do
+        {
+          project: {
+            name: "camelCaseテスト",
+            dueDate: "2026-08-29",
+            completed: false,
+            targetHours: 10,
+            pomodoroWorkMinutes: 25,
+            pomodoroBreakMinutes: 5
+          }
+        }
+      end
+
+      it "snake_case に変換されて保存され、レスポンスは snake_case のキーで返ること" do
+        post "/api/v1/projects", params: camel_params, as: :json
+
+        expect(response).to have_http_status(:created)
+
+        created_project = Project.last
+        expect(created_project.due_date).to eq Date.parse("2026-08-29")
+        expect(created_project.target_hours).to eq 10
+        expect(created_project.pomodoro_work_minutes).to eq 25
+        expect(created_project.pomodoro_break_minutes).to eq 5
+
+        json = JSON.parse(response.body)
+        expect(json).to include("due_date", "target_hours", "pomodoro_work_minutes")
+        expect(json).not_to include("dueDate")
+      end
+    end
+
     context "名前が空の場合 (不正なパラメータ)" do
       let(:invalid_params) do
         {

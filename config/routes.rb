@@ -11,10 +11,10 @@ Rails.application.routes.draw do
 
       resources :projects, only: [ :index, :create, :destroy, :update ] do
         resources :commits, only: [ :index, :create ]
-        member do
-          get :summary # GET /api/v1/projects/:id/summary になる
-        end
       end
+
+      get "summary/project", to: "summary#project_all_summary" # GET /api/v1/summary/project（全プロジェクト）
+      get "summary/project_id/:id", to: "summary#project"      # GET /api/v1/summary/project_id/:id
 
       resources :work_sessions, only: [ :index, :create ]
       resources :commits, only: [ :index, :destroy ]

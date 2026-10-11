@@ -26,26 +26,6 @@ module Api
         # }, status: :ok
       end
 
-      # GET /api/v1/projects/:id/summary
-      def summary
-        # 1. 対象のプロジェクトを取得（認証がある場合は current_user.projects.find(params[:id])）
-        project = current_user ? current_user.projects.find(params[:id]) : Project.find(params[:id])
-
-        # 2. 対象プロジェクトに紐づくコミットを集計
-        commits = project.commits
-        total_ms = commits.sum(:duration_ms) || 0
-        session_count = commits.count
-
-        render json: {# project.idとproject.nameを加えて、時間以外のプロジェクトごとのサマリもバックエンドに退避していいかもね！いったんは時間のみ
-            total_duration_ms: total_ms,
-            total_minutes: (total_ms / 1000 / 60).to_i,
-            session_count: session_count,
-            last_commit_at: commits.maximum(:created_at)
-        }, status: :ok
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: "Project not found" }, status: :not_found
-      end
-
       # POST /api/v1/projects
       def create
         project = Project.new(project_params)

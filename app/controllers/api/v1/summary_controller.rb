@@ -1,5 +1,5 @@
 class Api::V1::SummaryController < ApplicationController
-    # GET /api/v1/summary/project_id/:id
+      # GET /api/v1/summary/project_id/:id
       def project
         # 認証なしで全 Project から ID 検索
         project = Project.find(params[:id])

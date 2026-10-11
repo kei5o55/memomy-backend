@@ -11,6 +11,9 @@ Rails.application.routes.draw do
 
       resources :projects, only: [ :index, :create, :destroy, :update ] do
         resources :commits, only: [ :index, :create ]
+        member do
+          get :summary # GET /api/v1/projects/:id/summary になる
+        end
       end
 
       resources :work_sessions, only: [ :index, :create ]

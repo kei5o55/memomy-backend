@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get "health", to: "health#show"
       get "me", to: "users#me"
+      resource :user_profile, only: [ :show, :update ], controller: "user_profile" # GET / PATCH /api/v1/user_profile
       get "test", to: "users#test"
       post "sync/import", to: "sync#import"
       # devise_for :users はそのまま残しておき、API 用セッションのみカスタムルートを定義

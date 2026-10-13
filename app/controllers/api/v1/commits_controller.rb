@@ -4,9 +4,6 @@ module Api
       # Active Storage の URL 生成ヘルパーを使用可能にする
       include Rails.application.routes.url_helpers
 
-      # 認証機能を追加する場合は有効化
-      # before_action :authenticate_user!
-
       # GET /api/v1/projects/:project_id/commits
       def index
         commits = if params[:project_id].present?

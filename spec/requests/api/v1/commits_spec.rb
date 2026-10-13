@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
 
       it "201 Created が返り、DBに Commit が 1 件追加されること" do
         expect {
-          post "/api/v1/projects/#{project.id}/commits", params: valid_params
+          post "/api/v1/projects/#{project.id}/commits", params: valid_params, headers: auth_headers
         }.to change(project.commits, :count).by(1)
 
         # 💡 コントローラーで status: :created を返している場合は :created に変更
@@ -40,7 +40,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
       end
 
       it "snake_case に変換されて保存され、レスポンスは snake_case のキーで返ること" do
-        post "/api/v1/projects/#{project.id}/commits", params: camel_params
+        post "/api/v1/projects/#{project.id}/commits", params: camel_params, headers: auth_headers
 
         expect(response).to have_http_status(:created)
 
@@ -64,7 +64,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
       end
 
       it "404 Not Found が返り、エラーメッセージが含まれること" do
-        post "/api/v1/projects/invalid-id-9999/commits", params: valid_params
+        post "/api/v1/projects/invalid-id-9999/commits", params: valid_params, headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
 
@@ -85,7 +85,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
       end
 
       it "422 Unprocessable Entity が返り、バリデーションエラーメッセージが含まれること" do
-        post "/api/v1/projects/#{project.id}/commits", params: invalid_time_params
+        post "/api/v1/projects/#{project.id}/commits", params: invalid_time_params, headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
 
@@ -101,7 +101,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
     let!(:commit2) { FactoryBot.create(:commit, project: project, note: "Commit 2") }
 
     it "200 OK が返り、指定した Project の Commit が取得できること" do
-      get "/api/v1/projects/#{project.id}/commits"
+      get "/api/v1/projects/#{project.id}/commits", headers: auth_headers
 
       expect(response).to have_http_status(:ok)
 
@@ -111,7 +111,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
     end
 
     it "存在しない project_id が指定された場合、404 Not Found が返ること" do
-      get "/api/v1/projects/invalid-id-9999/commits"
+      get "/api/v1/projects/invalid-id-9999/commits", headers: auth_headers
 
       expect(response).to have_http_status(:not_found)
 
@@ -120,7 +120,7 @@ RSpec.describe "Api::V1::Commits", type: :request do
     end
 
     it "project_idが指定されなかった場合,全てのコミットを取得できること" do
-      get "/api/v1/commits"
+      get "/api/v1/commits", headers: auth_headers
 
       expect(response).to have_http_status(:ok)
 

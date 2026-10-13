@@ -7,7 +7,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
       create(:project)
       create(:project)
 
-      get "/api/v1/projects"
+      get "/api/v1/projects", headers: auth_headers
 
       expect(response).to have_http_status(:ok)
 
@@ -35,14 +35,14 @@ RSpec.describe "Api::V1::Projects", type: :request do
 
       it "201 Created が返り、DBにプロジェクトが1件追加されること" do
         expect {
-          post "/api/v1/projects", params: valid_params
+          post "/api/v1/projects", params: valid_params, headers: auth_headers
         }.to change(Project, :count).by(1)
 
         expect(response).to have_http_status(:created)
       end
 
       it "Rails側で Date型 や Integer型 に正しく自動変換されて保存されること" do
-        post "/api/v1/projects", params: valid_params
+        post "/api/v1/projects", params: valid_params, headers: auth_headers
 
         created_project = Project.last
 
@@ -54,7 +54,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
       end
 
       it "レスポンスの JSON に作成されたデータが含まれていること" do
-        post "/api/v1/projects", params: valid_params
+        post "/api/v1/projects", params: valid_params, headers: auth_headers
 
         json = JSON.parse(response.body)
         expect(json["name"]).to eq "COMITIA新刊"
@@ -76,7 +76,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
       end
 
       it "snake_case に変換されて保存され、レスポンスは snake_case のキーで返ること" do
-        post "/api/v1/projects", params: camel_params, as: :json
+        post "/api/v1/projects", params: camel_params, as: :json, headers: auth_headers
 
         expect(response).to have_http_status(:created)
 
@@ -105,7 +105,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
 
       it "DBに追加されず、422 Unprocessable Entity とエラーメッセージが返ること" do
         expect {
-          post "/api/v1/projects", params: invalid_params
+          post "/api/v1/projects", params: invalid_params, headers: auth_headers
         }.not_to change(Project, :count)
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -128,7 +128,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
 
       it "DBに追加されず、422 Unprocessable Entity とエラーメッセージが返ること" do
         expect {
-          post "/api/v1/projects", params: invalid_params
+          post "/api/v1/projects", params: invalid_params, headers: auth_headers
         }.not_to change(Project, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -143,14 +143,14 @@ RSpec.describe "Api::V1::Projects", type: :request do
     let(:project) { create(:project) }
     context "存在しないproject_idが送信された場合" do
       it "404 Not Found が返ること" do
-        patch "/api/v1/projects/999999", params: { project: { name: "更新テスト" } }
+        patch "/api/v1/projects/999999", params: { project: { name: "更新テスト" } }, headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
       end
     end
     context "存在するproject_idが送信された場合" do
       it "正しく更新されること" do
-        patch "/api/v1/projects/#{project.id}", params: { project: { name: "更新テスト" } }
+        patch "/api/v1/projects/#{project.id}", params: { project: { name: "更新テスト" } }, headers: auth_headers
 
         expect(response).to have_http_status(:ok)
 
@@ -160,14 +160,14 @@ RSpec.describe "Api::V1::Projects", type: :request do
     end
     context "想定しない数値が送信された場合" do
       it "422 Unprocessable Entity が返ること(数値マイナス)" do
-        patch "/api/v1/projects/#{project.id}", params: { project: { target_hours: "-1" } }
+        patch "/api/v1/projects/#{project.id}", params: { project: { target_hours: "-1" } }, headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
 
         json = JSON.parse(response.body)
         expect(json["errors"]).to be_present
 
-        patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }
+        patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }, headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
 
@@ -175,7 +175,7 @@ RSpec.describe "Api::V1::Projects", type: :request do
         expect(json["errors"]).to be_present
       end
       it "422 Unprocessable Entity が返ること(名前空欄)" do
-        patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }
+        patch "/api/v1/projects/#{project.id}", params: { project: { name: "" } }, headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
 
@@ -189,14 +189,14 @@ RSpec.describe "Api::V1::Projects", type: :request do
     let(:project) { create(:project) }
     context "存在しないproject_idが送信された場合" do
       it "404 Not Found が返ること" do
-        delete "/api/v1/projects/999999"
+        delete "/api/v1/projects/999999", headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
       end
     end
     context "存在するproject_idが送信された場合" do
       it "正しく削除されること" do
-        delete "/api/v1/projects/#{project.id}"
+        delete "/api/v1/projects/#{project.id}", headers: auth_headers
 
         expect(response).to have_http_status(:no_content)
       end

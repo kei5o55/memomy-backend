@@ -11,7 +11,8 @@
 Devise.setup do |config|
   config.navigational_formats = []
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.devise_jwt_secret_key.to_s.presence || ENV["DEVISE_JWT_SECRET_KEY"]
+    jwt.secret = Rails.application.credentials.devise_jwt_secret_key.to_s.presence || ENV["DEVISE_JWT_SECRET_KEY"] ||
+                 (Rails.env.test? ? "test-jwt-secret" : nil) # CI のテスト環境にはシークレットが無いため
 
     # 新規登録 (/api/v1/signup) や ログイン (/api/v1/login) で JWT を発行
     jwt.dispatch_requests = [

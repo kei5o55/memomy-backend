@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe "Api::V1::DaySchedules", type: :request do
   describe "GET /api/v1/day_schedules (一覧取得)" do
     it "200 OK が返り、スケジュール一覧が取得できること" do
-      get "/api/v1/day_schedules"
+      get "/api/v1/day_schedules", headers: auth_headers
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::DaySchedules", type: :request do
       end
 
       it "snake_case に変換されて保存され、レスポンスは snake_case のキーで返ること" do
-        post "/api/v1/day_schedules", params: camel_params, as: :json
+        post "/api/v1/day_schedules", params: camel_params, as: :json, headers: auth_headers
 
         expect(response).to have_http_status(:created)
 
@@ -47,7 +47,7 @@ RSpec.describe "Api::V1::DaySchedules", type: :request do
       end
 
       it "422 Unprocessable Content が返り、エラーが含まれること" do
-        post "/api/v1/day_schedules", params: invalid_params
+        post "/api/v1/day_schedules", params: invalid_params, headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
 
@@ -60,7 +60,7 @@ RSpec.describe "Api::V1::DaySchedules", type: :request do
   describe "DELETE /api/v1/day_schedules (削除)" do
     context "存在しないスケジュールIDの場合" do
       it "404 Not Found が返り、エラーメッセージが含まれること" do
-        delete "/api/v1/day_schedules/invalid-id-9999"
+        delete "/api/v1/day_schedules/invalid-id-9999", headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
 

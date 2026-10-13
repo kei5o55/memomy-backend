@@ -2,8 +2,6 @@
 module Api
   module V1
     class ProjectsController < ApplicationController
-      # before_action :authenticate_user! # Devise-JWTによる認証チェック
-
       # GET /api/v1/projects
       def index
         # ログインユーザーのプロジェクトのみ取得

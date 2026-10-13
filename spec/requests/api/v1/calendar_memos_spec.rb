@@ -8,7 +8,7 @@ RSpec.describe "Api::V1::CalendarMemos", type: :request do
 
   describe "GET /api/v1/calendar_memos (一覧取得)" do
     it "カレンダーメモの一覧を取得し、ステータス 200 (OK) を返すこと" do
-      get api_v1_calendar_memos_path
+      get api_v1_calendar_memos_path, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
 
@@ -30,7 +30,7 @@ RSpec.describe "Api::V1::CalendarMemos", type: :request do
 
       it "新しいカレンダーメモが作成され、ステータス 201 (Created) を返すこと" do
         expect {
-          post api_v1_calendar_memos_path, params: valid_params
+          post api_v1_calendar_memos_path, params: valid_params, headers: auth_headers
         }.to change(CalendarMemo, :count).by(1)
 
         expect(response).to have_http_status(:created)
@@ -53,7 +53,7 @@ RSpec.describe "Api::V1::CalendarMemos", type: :request do
 
       it "作成に失敗し、ステータス 422 (Unprocessable Entity) とエラーメッセージを返すこと" do
         expect {
-          post api_v1_calendar_memos_path, params: invalid_params
+          post api_v1_calendar_memos_path, params: invalid_params, headers: auth_headers
         }.not_to change(CalendarMemo, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -68,7 +68,7 @@ RSpec.describe "Api::V1::CalendarMemos", type: :request do
     context "存在するデータの場合" do
       it "データが削除され、ステータス 204 (No Content) を返すこと" do
         expect {
-          delete api_v1_calendar_memo_path(calendar_memo)
+          delete api_v1_calendar_memo_path(calendar_memo), headers: auth_headers
         }.to change(CalendarMemo, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
@@ -77,7 +77,7 @@ RSpec.describe "Api::V1::CalendarMemos", type: :request do
 
     context "存在しないデータの場合" do
       it "ステータス 404 (Not Found) を返すこと" do
-        delete api_v1_calendar_memo_path(id: 999999)
+        delete api_v1_calendar_memo_path(id: 999999), headers: auth_headers
 
         expect(response).to have_http_status(:not_found)
 

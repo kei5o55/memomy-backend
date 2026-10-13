@@ -13,14 +13,15 @@ class ApplicationController < ActionController::Base
 
   # Devise で name など追加パラメータを許可する設定
   before_action :configure_permitted_parameters, if: :devise_controller?
-
-  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :basic_auth, if: -> { Rails.env.production? && ENV["BASIC_AUTH_USER"].present? }
+  # 全 API で JWT 認証を必須にする（ログイン・新規登録・ヘルスチェックは各コントローラでスキップ）
+  before_action :authenticate_user!
 
   private
 
-  # authenticate_user! を手動で定義して Warden 認証を実行
-  def authenticate_user!
+  # authenticate_user! を手動で定義して JWT を検証する
+  # （Devise 側から引数付きで呼ばれることがあるため引数は受け取って無視する）
+  def authenticate_user!(_opts = {})
     auth_header = request.headers["Authorization"]
     token = auth_header&.split(" ")&.last
 
